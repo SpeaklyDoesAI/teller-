@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connect My Bank</title>
+</head>
+<body>
+    <h1>Connect My Bank Account</h1>
+    <button id="connect-btn">Connect Bank</button>
+    
+    <div id="result" style="margin-top: 20px;"></div>
+
+    <script src="https://cdn.teller.io/connect/connect.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tellerConnect = TellerConnect.setup({
+                applicationId: "app_plo088sf20bf7jh9ba000", // Replace with your app ID
+                environment: "development", // Use "development" for real banks (free for 100 connections)
+                products: ["transactions", "balance", "identity"],
+                
+                onSuccess: function(enrollment) {
+                    const token = enrollment.accessToken;
+                    
+                    // Display the token
+                    document.getElementById("result").innerHTML = 
+                        "<h2>Success! Your Access Token:</h2>" +
+                        "<p style='background: #f0f0f0; padding: 15px; word-break: break-all;'>" +
+                        "<strong>" + token + "</strong></p>" +
+                        "<p>Copy this token and use it in n8n!</p>";
+                    
+                    console.log("Access Token:", token);
+                },
+                
+                onExit: function() {
+                    console.log("Closed without connecting");
+                }
+            });
+
+            document.getElementById("connect-btn").addEventListener("click", function() {
+                tellerConnect.open();
+            });
+        });
+    </script>
+</body>
+</html>
