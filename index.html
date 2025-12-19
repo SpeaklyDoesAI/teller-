@@ -69,7 +69,7 @@
     <script src="https://cdn.teller.io/connect/connect.js"></script>
     <script>
         // Simple repair flow:
-        // 1) If ?enrollment_id=XYZ exists in the URL, open Connect in repair mode with that ID.
+        // 1) If ?enrollment_id=XYZ exists in the URL, initialize Teller Connect with that ID (repair mode) and open immediately.
         // 2) Otherwise, user can click the button to start a fresh connection.
 
         function getEnrollmentIdFromQuery() {
@@ -83,6 +83,7 @@
             const connect = TellerConnect.setup({
                 applicationId: "app_plo088sf20bf7jh9ba000", // Replace with your Teller app ID
                 environment: "development",
+                enrollmentId: enrollmentIdFromUrl || undefined, // Passing here puts Connect in repair mode.
                 products: ["transactions", "balance", "identity"],
                 onSuccess: (enrollment) => {
                     console.log("Success:", enrollment);
@@ -95,9 +96,10 @@
                 connect.open();
             });
 
+            // Auto-open in repair mode if enrollmentId is present in the URL.
             if (enrollmentIdFromUrl) {
                 console.log("Opening in repair mode for enrollment:", enrollmentIdFromUrl);
-                connect.open({ enrollmentId: enrollmentIdFromUrl });
+                connect.open();
             }
         }
 
